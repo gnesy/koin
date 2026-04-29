@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Koin - Gestión Familiar{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        koin: {
+                            dark: '#1B3115',  /* El verde oscuro del botón Login */
+                            light: '#8CE273', /* El verde brillante de Apple */
+                            gray: '#F3F4F1',  /* El fondo grisáceo claro de los botones */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'], /* Una fuente moderna similar al diseño */
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased min-h-screen flex flex-col">
+    
+    <main class="flex-grow flex items-center justify-center p-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>
