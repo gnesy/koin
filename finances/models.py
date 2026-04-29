@@ -1,15 +1,63 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
-from django.db import models
-from django.contrib.auth.models import User
+class UsuarioManager(BaseUserManager):
+    def create_user(self, correo_usuario, nombre_usuario, apellido_usuario, nombre_familia_usuario, password=None):
+        if not correo_usuario:
+            raise ValueError('El usuario debe tener un correo electrónico')
+        
+        user = self.model(
+            correo_usuario=self.normalize_email(correo_usuario),
+            nombre_usuario=nombre_usuario,
+            apellido_usuario=apellido_usuario,
+            nombre_familia_usuario=nombre_familia_usuario,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, correo_usuario, nombre_usuario, apellido_usuario, nombre_familia_usuario, password=None):
+        user = self.create_user(
+            correo_usuario,
+            nombre_usuario=nombre_usuario,
+            apellido_usuario=apellido_usuario,
+            nombre_familia_usuario=nombre_familia_usuario,
+            password=password,
+        )
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
+    correo_usuario = models.EmailField(unique=True, max_length=255)
+    nombre_usuario = models.CharField(max_length=100)
+    apellido_usuario = models.CharField(max_length=100)
+    nombre_familia_usuario = models.CharField(max_length=150)
+    
+    # Campos obligatorios para el funcionamiento de Django Admin
+    # is_active = models.BooleanField(default=True)
+    # is_staff = models.BooleanField(default=False)
+
+    objects = UsuarioManager()
+
+    USERNAME_FIELD = 'correo_usuario'
+    REQUIRED_FIELDS = ['nombre_usuario', 'apellido_usuario', 'nombre_familia_usuario']
+
+    class Meta:
+        db_table = 'usuarios' # Nombre de la tabla en la base de datos
+
+    def __str__(self):
+        return f"{self.correo_usuario} - {self.nombre_familia_usuario}"
 
 # Extensión del usuario para el Jefe de Familia
-class PerfilFamilia(models.Model):
+""" class PerfilFamilia(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
     nombre_familia = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"Familia {self.nombre_familia}"
+        return f"Familia {self.nombre_familia}" """
 
 # Tabla de Monedas
 class Moneda(models.Model):
@@ -22,7 +70,7 @@ class Moneda(models.Model):
 
 # Tabla de Cuentas
 class Cuenta(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     moneda = models.ForeignKey(Moneda, on_delete=models.PROTECT)
     nombre_cuenta = models.CharField(max_length=100)
     saldo_inicial_cuenta = models.DecimalField(max_digits=15, decimal_places=2)

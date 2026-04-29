@@ -119,3 +119,24 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# --- CONFIGURACIÓN DE AUTENTICACIÓN PARA KOIN ---
+
+# 1. Si alguien sin registrar entra a la raíz (/), envíalo aquí:
+LOGIN_URL = '/iniciar-sesion/'
+
+# 2. Cuando alguien haga login con éxito, envíalo al Dashboard (la raíz):
+LOGIN_REDIRECT_URL = '/'
+
+# 3. Cuando alguien cierre sesión, devuélvelo al login:
+LOGOUT_REDIRECT_URL = '/iniciar-sesion/'
+
+# Busca la sección de AUTH_USER_MODEL o agrégala al final del archivo
+AUTH_USER_MODEL = 'finances.Usuario'
+
+# Como ahora usamos correo_usuario como USERNAME_FIELD, 
+# el backend personalizado que hicimos antes ya no es estrictamente necesario,
+# pero asegúrate de que tus backends de autenticación estén limpios:
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

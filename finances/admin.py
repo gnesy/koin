@@ -1,8 +1,7 @@
 from django.contrib import admin
-from .models import PerfilFamilia, Moneda, Cuenta, Categoria, TipoMovimiento, Movimiento
+from .models import  Moneda, Cuenta, Categoria, TipoMovimiento, Movimiento
 
 # Registramos los modelos básicos
-admin.site.register(PerfilFamilia)
 admin.site.register(Moneda)
 admin.site.register(Cuenta)
 admin.site.register(Categoria)
