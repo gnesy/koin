@@ -122,14 +122,14 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # --- CONFIGURACIÓN DE AUTENTICACIÓN PARA KOIN ---
 
-# 1. Si alguien sin registrar entra a la raíz (/), envíalo aquí:
-LOGIN_URL = '/iniciar-sesion/'
+# 1. Si alguien sin registrar intenta entrar a una zona protegida, envíalo aquí:
+LOGIN_URL = 'registro' # Usamos el 'name' de la url en lugar de la ruta escrita
 
-# 2. Cuando alguien haga login con éxito, envíalo al Dashboard (la raíz):
-LOGIN_REDIRECT_URL = '/'
+# 2. Cuando alguien haga login con éxito, envíalo al Dashboard:
+LOGIN_REDIRECT_URL = 'dashboard' 
 
 # 3. Cuando alguien cierre sesión, devuélvelo al login:
-LOGOUT_REDIRECT_URL = '/iniciar-sesion/'
+LOGOUT_REDIRECT_URL = 'login'
 
 # Busca la sección de AUTH_USER_MODEL o agrégala al final del archivo
 AUTH_USER_MODEL = 'finances.Usuario'
@@ -139,4 +139,16 @@ AUTH_USER_MODEL = 'finances.Usuario'
 # pero asegúrate de que tus backends de autenticación estén limpios:
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+]
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# --- CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS ---
+
+# La URL que el navegador usará (ej. 127.0.0.1:8000/static/img/logo.png)
+STATIC_URL = 'static/'
+
+# Le decimos a Django en qué carpetas físicas de tu computadora debe buscar
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
 ]

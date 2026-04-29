@@ -8,26 +8,33 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        koin: {
-                            dark: '#1B3115',  /* El verde oscuro del botón Login */
-                            light: '#8CE273', /* El verde brillante de Apple */
-                            gray: '#F3F4F1',  /* El fondo grisáceo claro de los botones */
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'], /* Una fuente moderna similar al diseño */
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    // Tus nuevas variables de color
+                    'deep-teal': '#062F35',
+                    'charcoal-teal': '#16232C',
+                    'mint-green': '#AFEDD6',
+                    'pale-blue-grey': '#DFE7E9',
+                    'warm-yellow': '#FFC334',
+                    
+                    // Opcional: Puedes mantener los que teníamos antes si aún los usas
+                    koin: {
+                        dark: '#1B3115',  
+                        light: '#8CE273', 
                     }
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'], 
                 }
             }
         }
+    }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased min-h-screen flex flex-col">
+<body class="bg-gradient-to-b from-deep-teal via-[#51847b] to-mint-green text-gray-900 antialiased min-h-screen flex flex-col">
     
     <main class="flex-grow flex items-center justify-center p-4">
         {% block content %}

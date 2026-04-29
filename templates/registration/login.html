@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Iniciar Sesión - Koin{% endblock %}
 
 {% block content %}
 <div class="w-full max-w-[400px] bg-white rounded-[32px] p-8 shadow-sm">
+    <!-- LOGO -->
+    <span class="flex justify-center"><img src="{% static 'images/KOIN icono degradado.png' %}" alt="Logo Koin" width="80px"></span>
     <!-- EN CABEZADO: "Iniciar Sesión - Koin" -->
-    <h2 class="text-3xl font-bold text-center mb-8 mt-4 text-koin-dark">Iniciar Sesión</h2>
+    <h4 class="text-3xl font-bold text-center mb-2 mt-4 text-charcoal-teal">Bienvenido a Koin</h4>
+    <p class="text-sm text-gray-500 text-center mb-6">¡Gestiona tus finanzas familiares iniciando sesión!</p>
     <!-- FORMULARIO DE LOGIN -->
     <form method="POST" action="{% url 'login' %}" class="space-y-4">
     {% csrf_token %}
@@ -44,26 +48,16 @@
         <a href="#" class="text-sm font-medium text-gray-500 hover:text-koin-dark transition-colors">¿Olvidaste tu contraseña?</a>
     </div>
 
-    <button type="submit" class="w-full bg-koin-dark text-white font-semibold rounded-full py-4 mt-2 hover:bg-opacity-90 transition-all shadow-md">
+    <button type="submit" class="w-full bg-mint-green text-charcoal-teal font-bold rounded-full py-4 mt-2 hover:bg-deep-teal hover:text-white transition-all shadow-md">
         Iniciar Sesión
     </button>
 </form>
 
-    <div class="flex items-center my-6">
-        <div class="flex-grow border-t border-gray-100"></div>
-        <span class="flex-shrink-0 mx-4 text-gray-400 text-sm">o</span>
-        <div class="flex-grow border-t border-gray-100"></div>
-    </div>
 
-    <div class="space-y-3">
-        <button class="w-full flex items-center justify-center gap-3 bg-koin-gray text-gray-700 font-medium rounded-full py-3 hover:bg-gray-200 transition-colors">
-            <span class="font-bold text-lg text-blue-500">G</span> Continuar con Google
-        </button>    
-    </div>
 
     <div class="text-center mt-8">
         <p class="text-sm text-gray-500">
-            ¿No tienes una cuenta? <a href="{% url 'registro' %}" class="font-semibold text-koin-dark hover:underline">Regístrate</a>
+            ¿No tienes una cuenta? <a href="{% url 'registro' %}" class="font-semibold text-charcoal-teal hover:underline">Regístrate</a>
         </p>
     </div>
 </div>
