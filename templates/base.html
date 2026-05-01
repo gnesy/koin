@@ -3,43 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Koin - Gestión Familiar{% endblock %}</title>
-    
+    <title>{% block title %}Koin{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    // Tus nuevas variables de color
-                    'deep-teal': '#062F35',
-                    'charcoal-teal': '#16232C',
-                    'mint-green': '#AFEDD6',
-                    'pale-blue-grey': '#DFE7E9',
-                    'warm-yellow': '#FFC334',
-                    
-                    // Opcional: Puedes mantener los que teníamos antes si aún los usas
-                    koin: {
-                        dark: '#1B3115',  
-                        light: '#8CE273', 
-                    }
-                },
-                fontFamily: {
-                    sans: ['Inter', 'sans-serif'], 
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-teal': '#062F35',
+                        'charcoal-teal': '#16232C',
+                        'mint-green': '#AFEDD6',
+                        'pale-blue-grey': '#DFE7E9',
+                        'warm-yellow': '#FFC334',
+                        'white': '#FFFFFF',
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], }
                 }
             }
         }
-    }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-b from-deep-teal via-[#51847b] to-mint-green text-gray-900 antialiased min-h-screen flex flex-col">
-    
-    <main class="flex-grow flex items-center justify-center p-4">
-        {% block content %}
-        {% endblock %}
-    </main>
-
+<body class="bg-gradient-to-b from-deep-teal via-[#51847b] to-mint-green text-charcoal-teal antialiased min-h-screen">
+    {% block layout %}{% endblock %}
 </body>
 </html>
