@@ -66,7 +66,7 @@ class Moneda(models.Model):
     tasa_cambio = models.DecimalField(max_digits=18, decimal_places=4)
 
     def __str__(self):
-        return self.nombre_moneda
+        return self.codigo
 
 # Tabla de Cuentas
 class Cuenta(models.Model):

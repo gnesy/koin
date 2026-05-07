@@ -1,5 +1,5 @@
 from django import forms
-from .models import Usuario
+from .models import Cuenta, Moneda, Usuario
 from django.contrib.auth.forms import AuthenticationForm
 
 class LoginForm(AuthenticationForm):
@@ -63,3 +63,36 @@ class RegistroUsuarioForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+
+class CuentaForm(forms.ModelForm):
+    # Declaramos explícitamente el campo relacional
+    moneda = forms.ModelChoiceField(
+        queryset=Moneda.objects.all(), # Consulta todas las monedas en la base de datos
+        empty_label="Moneda", # Opción por defecto
+        widget=forms.Select(attrs={
+            'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors'
+        })
+    )
+
+    class Meta:
+        model = Cuenta
+        fields = ['nombre_cuenta', 'moneda', 'saldo_inicial_cuenta', 'color_cuenta']
+        
+        # Como definimos 'moneda' arriba, la quitamos de este diccionario 'widgets'
+        widgets = {
+            'nombre_cuenta': forms.TextInput(attrs={
+                'placeholder': 'Ej: Cuenta Nómina, Ahorros', 
+                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors'
+            }),
+            'saldo_inicial_cuenta': forms.NumberInput(attrs={
+                'placeholder': '0.00', 
+                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors', 
+                'step': '0.01'
+            }),
+            'color_cuenta': forms.TextInput(attrs={
+                'type': 'color', 
+                'class': 'w-full h-12 px-2 py-1 bg-pale-blue-grey rounded-xl outline-none cursor-pointer'
+            }),
+        }

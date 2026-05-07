@@ -2,36 +2,65 @@
 {% load static %}
 
 {% block layout %}
-<div class="min-h-screen bg-pale-blue-grey flex items-center justify-center font-sans">
     
-    <div class="w-full h-[100dvh]  bg-white  relative flex flex-col overflow-hidden ">
+    <div class="fixed inset-0 h-[100dvh] w-full font-sans relative flex flex-col overflow-hidden ">
         
-        <header class="h-20 bg-white flex items-center justify-between px-6 shrink-0 z-10">
+        <header class="h-20 bg-deep-teal flex items-center justify-between px-6 ">
             <div>
-                <h1 class="text-xl font-bold text-deep-teal">Koin</h1>
-                <p class="text-xs text-gray-400">Jefe de Familia: {{ user.first_name }}</p>
+                <img src="{% static 'images/KOIN completo degradado.png' %}" alt="Logo Koin" width="120px">
             </div>
-                        <div class="w-10 h-10 rounded-full bg-pale-blue-grey flex items-center justify-center text-deep-teal font-bold">
-                {{ user.first_name|first|default:"U" }}
+            <div class="flex items-center gap-3">
+                
+                <!-- SIGNOUT -->
+                 <div class="flex flex-col items-center gap-2">
+                    <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                        <button type="submit" class=" flex flex-col items-center text-gray-500 hover:text-red-500 p-2 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            <p>Salir</p>
+                        </button>
+                    </form>
+                </div>
             </div>
+            
         </header>
+        <div class="bg-mint-green rounded-b-xl text-sm text-deep-teal text-center py-1 z-10 ">
+            <p class="">Tasa BCV de hoy: <span class="font-bold">{{ tasa_bcv_global|floatformat:2 }} Bs.</span></p>
+        </div>
+        
 
-        <main class="flex-1 overflow-hidden p-6 pb-32 bg-pale-blue-grey rounded-t-3xl shadow-[inset_0px_4px_10px_rgba(0,0,0,0.02)]">
-            {% block content %}
+        <main class="flex-1 overflow-y-auto overflow-x-hidden rounded-t-xl p-6 pb-32 shadow-[inset_0px_4px_10px_rgba(0,0,0,0.02)]">
+            {% block content %} 
             {% endblock %}
         </main>
-        <!-- ESTE ES EL DIV DEL DOCK BAR -->
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 h-16 px-6 bg-charcoal-teal rounded-3xl shadow-xl flex items-center justify-center gap-4 z-50 w-max transition-all duration-300 ease-in-out">
-            
-            <a href="{% url 'dashboard' %}" class="flex flex-col items-center justify-center w-12 h-12 rounded-2xl hover:bg-warm-yellow  hover:text-charcoal-teal text-white/60 hover:scale-105 transition-transform">
+        <!-- ESTE ES EL DIV DEL DOCK BAR CORREGIDO -->
+        <div class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 min-h-[4rem] py-2 px-4 sm:px-6 bg-charcoal-teal rounded-3xl shadow-xl flex items-center justify-center gap-2 sm:gap-4 z-50 w-max transition-all duration-300 ease-in-out">
+                    
+            <a href="{% url 'dashboard' %}" class="flex flex-col items-center justify-center w-auto px-3 py-2 rounded-2xl hover:bg-mint-green hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <p class="text-[12px] sm:text-sm mt-1 font-medium">Inicio</p>
             </a>
             
-            <a href="#" class="flex flex-col items-center justify-center w-12 h-12 hover:bg-warm-yellow rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-colors">
+            <a href="#" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3  0 003 3z"></path></svg>
+                <p class="text-[12px] sm:text-sm mt-1 font-medium">Calculadora</p>
+            </a>
+
+            <a href="#" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <p class="text-[12px] sm:text-sm mt-1 font-medium">Simulación</p>
+            </a>
+
+            <a href="{% url 'cuentas' %}" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3  0 003 3z"></path></svg>
+                <p class="text-[12px] sm:text-sm mt-1 font-medium">Cuentas</p>
+            </a>
+
+            <a href="#" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3  0 003 3z"></path></svg>
+                <p class="text-[12px] sm:text-sm mt-1 font-medium">Perfil</p>
             </a>
 
         </div>
     </div>
-</div>
 {% endblock %}

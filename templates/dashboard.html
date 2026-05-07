@@ -1,57 +1,81 @@
 {% extends 'base_dashboard.html' %}
-
+{% load humanize %}
 {% block title %}Dashboard - Koin{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-4xl mx-auto space-y-6 pb-20">
+<div class="w-full max-w-4xl mx-auto space-y-6">
     
-    <header class="flex justify-between items-center py-4 border-b border-gray-100">
+   <!--  INFORMACIÓN DEL USUARIO -->
+    <div class="flex justify-between items-center py-4 ">
         <div>
-            <h2>{{ familia }}</h2>
-            <h1 class="text-2xl font-bold text-koin-dark">¡Bienvenido Jefe de Familia, {{ nombre_completo }}!</h1>
-            <p class="text-gray-500 text-sm">Resumen financiero de tu familia.</p>
-        </div>
-        
-        <form method="POST" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="text-gray-500 hover:text-red-500 p-2 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-            </button>
-        </form>
-    </header>
-
-    <div class="bg-koin-dark rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
-        <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-white opacity-10"></div>
-        <h2 class="text-koin-light text-sm font-semibold mb-1">Balance Total</h2>
-        <p class="text-4xl font-bold tracking-tight">$ 0.00</p>
-        
-        <div class="mt-6 flex gap-4">
-            <button class="flex-1 bg-white text-koin-dark py-2 px-4 rounded-full font-semibold text-sm hover:bg-gray-100 transition-colors">
-                + Ingreso
-            </button>
-            <button class="flex-1 bg-koin-light text-koin-dark py-2 px-4 rounded-full font-semibold text-sm hover:brightness-95 transition-colors">
-                - Gasto
-            </button>
+            <h1 class="text-2xl font-bold text-charcoal-teal">¡Bienvenido, {{ nombre_completo }}!</h1>
+            <h2>Jefe de la {{ familia }}</h2>
         </div>
     </div>
 
+    <!-- CONTENEDOR BALANCE TOTAL -->
+    <div class=" rounded-3xl p-6 text-charcoal-teal shadow-lg relative">
+        <div class="flex justify-around items-center gap-8">
+            <div class="flex flex-col items-center gap-4">
+                <h2 class="text-koin-light text-sm font-semibold mb-1">Balance en Dolares</h2>
+                {% if total_usd < 0 %}
+                <p class="text-2xl font-bold text-red-500 tracking-tight">{{ total_usd|intcomma  }}$</p>
+                {% else %}
+                <p class="text-2xl font-bold tracking-tight">{{ total_usd|intcomma  }}$</p>
+                {% endif %}
+            </div>
+            <div class="flex flex-col items-center gap-4">
+                <h2 class="text-koin-light text-sm font-semibold mb-1">Balance Bolivares</h2>
+                {% if total_ves < 0 %}
+                <p class="text-2xl text-red-500 font-bold tracking-tight">{{ total_ves|intcomma  }} Bs</p>
+                {% else %}
+                <p class="text-2xl  font-bold tracking-tight">{{ total_ves|intcomma  }} Bs</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DINÁMICA DE CUENTAS -->
     <div>
         <h3 class="text-lg font-bold text-gray-800 mb-3">Tus Cuentas</h3>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span class="text-sm font-medium text-gray-500">Banco</span>
+        
+        <div class="grid grid-cols-2 gap-x-4 gap-y-5">
+            
+            <!-- Bucle para mostrar las cuentas desde la base de datos (Máximo 3 según tu view) -->
+            {% for cuenta in cuentas %}
+            <div style="background-color: {{ cuenta.color_cuenta }};" class="rounded-2xl p-4 flex flex-col min-h-[90px] shadow-lg ">
+                <div  class="flex content-center items-center gap-2">
+                    <div class=" bg-white rounded-full w-3 h-3 text-white"></div>
+                    <span class="text-charcoal-teal invert font-bold text-center">{{ cuenta.nombre_cuenta }}</span>
                 </div>
-                <p class="text-xl font-bold text-gray-800">$ 0.00</p>
-            </div>
-            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span class="text-sm font-medium text-gray-500">Efectivo</span>
+                <div class="mt-2 text-right">
+                    <span class="text-lg font-bold invert text-deep-teal">{{ cuenta.saldo_inicial_cuenta }}</span>
+                    <span class="text-xs  font-bold invert ml-1">{{ cuenta.moneda }}</span>
                 </div>
-                <p class="text-xl font-bold text-gray-800">$ 0.00</p>
             </div>
+            {% empty %}
+            <!-- Mensaje si no hay cuentas registradas -->
+            <div class="col-span-2 text-center py-6 bg-white rounded-2xl border border-dashed border-gray-300">
+                <p class="text-sm text-gray-500 mb-2">Aún no tienes cuentas registradas.</p>
+                <a href="{% url 'cuentas' %}" class="text-deep-teal font-bold hover:underline">Ir a Cuentas para empezar</a>
+            </div>
+            {% endfor %}
+
+            <!-- Botón de "Ver más" (Solo aparece si hay al menos 1 cuenta) -->
+            {% if total_cuentas == 1 %}
+            <a href="{% url 'cuentas' %}" class="flex flex-col items-start justify-end min-h-[90px] ">
+                <span class=" text-charcoal-teal font-medium text-center text-sm">Ver todas mis cuentas</span>
+            </a>
+            {% elif total_cuentas == 2 %}
+            <a href="{% url 'cuentas' %}" class="flex flex-col items-start min-h-[90px] ml-2">
+                <span class=" text-charcoal-teal font-medium text-center text-sm">Ver todas mis cuentas</span>
+            </a>
+            {% else %}
+            <a href="{% url 'cuentas' %}" class="flex flex-col justify-center items-center min-h-[90px] ">
+                <span class=" text-charcoal-teal font-medium text-center text-sm">Ver todas mis cuentas</span>
+            </a>
+            {% endif %}
+
         </div>
     </div>
 

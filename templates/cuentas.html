@@ -1,0 +1,144 @@
+{% extends 'base_dashboard.html' %}
+{% load humanize %}
+{% block title %}Cuentas - Koin{% endblock %}
+{% block content %}
+
+
+
+<div class=" w-full max-w-4xl mx-auto space-y-6">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-deep-teal">Mis Cuentas</h2>
+        <p class="text-sm text-gray-500">Visualiza y gestiona tus fondos</p>
+    </div>
+    <!-- ========================================== -->
+    <!-- 1. LISTA DE CUENTAS DINÁMICAS Y EDICIÓN    -->
+    <!-- ========================================== -->
+    <div class="space-y-4">
+        {% for cuenta in cuentas %}
+        <div class="bg-white border-l-[6px] border-y-2 border-r-2 border-y-charcoal-teal/20 border-r-charcoal-teal/20 rounded-2xl p-4 shadow-sm flex flex-col relative group" style="border-left-color: {{ cuenta.color_cuenta|default:'#16232C' }};">
+            <div class="flex justify-between items-start">
+                <div class="flex items-center gap-2">
+                    <span class="font-medium text-charcoal-teal">{{ cuenta.nombre_cuenta }}</span>
+                    
+                    <!-- BOTÓN DE EDITAR (Lápiz) -->
+                    <button onclick="document.getElementById('modal-editar-{{ cuenta.id }}').classList.remove('hidden')" class="text-gray-400 hover:text-warm-yellow transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    </button>
+                </div>
+                
+                <div class="text-right">
+                    <span class="text-lg font-bold text-deep-teal">{{ cuenta.saldo_inicial_cuenta|intcomma }}</span>
+                    <span class="text-xs text-gray-500 ml-1">{{ cuenta.moneda }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE EDICIÓN EXCLUSIVO PARA ESTA CUENTA -->
+        <div id="modal-editar-{{ cuenta.id }}" class="hidden fixed inset-0 bg-charcoal-teal/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl transform transition-all">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-deep-teal">Editar Cuenta</h3>
+                    <button onclick="document.getElementById('modal-editar-{{ cuenta.id }}').classList.add('hidden')" class="text-gray-400 hover:text-red-500 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <!-- FORMULARIO DE EDICIÓN -->
+                <form method="POST" action="{% url 'editar_cuenta' cuenta.id %}" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-1">
+                        <label class="text-xs font-semibold text-charcoal-teal ml-2">Nombre de la cuenta</label>
+                        <input type="text" name="nombre_cuenta" value="{{ cuenta.nombre_cuenta }}" required class="w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors">
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label class="text-xs font-semibold text-charcoal-teal ml-2">Saldo</label>
+                        <input type="number" step="0.01" name="saldo_inicial_cuenta" value="{{ cuenta.saldo_inicial_cuenta|stringformat:".2f" }}" required class="w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-xs font-semibold text-charcoal-teal ml-2">Color identificador</label>
+                        <input type="color" name="color_cuenta" value="{{ cuenta.color_cuenta }}" class="w-full h-12 px-2 py-1 bg-pale-blue-grey rounded-xl outline-none cursor-pointer">
+                    </div>
+
+                    <div class="pt-4 flex flex-col gap-3">
+                        <button type="submit" class="w-full bg-mint-green text-charcoal-teal font-bold rounded-full py-4 mt-2 hover:bg-deep-teal hover:text-white transition-all shadow-md">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+
+                <!-- FORMULARIO DE ELIMINACIÓN -->
+                <form method="POST" action="{% url 'eliminar_cuenta' cuenta.id %}" class="mt-3 text-center" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta cuenta? Esta acción no se puede deshacer.');">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full bg-red-600 text-white font-bold rounded-full py-4 mt-2 hover:bg-red-700 hover:text-white transition-all shadow-md">
+                        Eliminar Cuenta
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        {% empty %}
+        <div class="text-center py-10 text-gray-400">
+            <p>No tienes cuentas registradas.</p>
+            <p class="text-xs mt-1">Presiona el botón + para agregar una.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 2. BOTÓN FLOTANTE (FAB) PARA AGREGAR       -->
+    <!-- ========================================== -->
+    <!-- Se ajustó bottom-24 y right-6 para que no quede detrás del menú inferior -->
+    <button onclick="document.getElementById('modal-cuenta').classList.remove('hidden')" class="absolute bottom-32 right-12 lg:right-40 w-14 h-14 bg-white border-[3px] border-charcoal-teal text-charcoal-teal rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-40">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+    </button>
+
+</div>
+
+
+<!-- ========================================== -->
+<!-- 3. MODAL PARA AGREGAR NUEVA CUENTA         -->
+<!-- ========================================== -->
+<div id="modal-cuenta" class="hidden fixed inset-0 bg-charcoal-teal/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl transform transition-all">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-deep-teal">Nueva Cuenta</h3>
+            <button onclick="document.getElementById('modal-cuenta').classList.add('hidden')" class="text-gray-400 hover:text-red-500 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="space-y-1">
+                <label class="text-xs font-semibold text-charcoal-teal ml-2">Nombre de la cuenta</label>
+                {{ form.nombre_cuenta }}
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-semibold text-charcoal-teal ml-2">Saldo Inicial</label>
+                    {{ form.saldo_inicial_cuenta }}
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-semibold text-charcoal-teal ml-2">Moneda</label>
+                    {{ form.moneda }}
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-semibold text-charcoal-teal ml-2">Color identificador</label>
+                {{ form.color_cuenta }}
+            </div>
+
+            <button type="submit" class="w-full bg-mint-green text-charcoal-teal font-bold rounded-full py-4 mt-2 hover:bg-deep-teal hover:text-white transition-all shadow-md">
+                Guardar Cuenta
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
