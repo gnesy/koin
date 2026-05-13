@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth.views import LogoutView
-from finances.views import registro_usuario, dashboard, login_view, cuentas_view, editar_cuenta_view, eliminar_cuenta_view
+from finances.views import registro_usuario, dashboard, login_view, cuentas_view, editar_cuenta_view, eliminar_cuenta_view, ingreso_view, gasto_view, historial_movimientos_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +28,7 @@ urlpatterns = [
     path("salir/", LogoutView.as_view(next_page="login"), name="logout"),
     path('cuentas/editar/<int:cuenta_id>/', editar_cuenta_view, name='editar_cuenta'),
     path('cuentas/eliminar/<int:cuenta_id>/', eliminar_cuenta_view, name='eliminar_cuenta'),
+    path('movimientos/add-ingreso/', ingreso_view, name='registrar_ingreso'),
+    path('movimientos/add-gasto/', gasto_view, name='registrar_gasto'),
+    path('movimientos/', historial_movimientos_view, name='historial_movimientos'),
 ]

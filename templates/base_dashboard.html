@@ -24,7 +24,7 @@
             </div>
             
         </header>
-        <div class="bg-mint-green rounded-b-xl text-sm text-deep-teal text-center py-1 z-10 ">
+        <div class="bg-mint-green rounded-b-xl text-sm md:text-base lg:text-lg text-deep-teal text-center py-1 z-10 ">
             <p class="">Tasa BCV de hoy: <span class="font-bold">{{ tasa_bcv_global|floatformat:2 }} Bs.</span></p>
         </div>
         
@@ -34,30 +34,30 @@
             {% endblock %}
         </main>
         <!-- ESTE ES EL DIV DEL DOCK BAR CORREGIDO -->
-        <div class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 min-h-[4rem] py-2 px-4 sm:px-6 bg-charcoal-teal rounded-3xl shadow-xl flex items-center justify-center gap-2 sm:gap-4 z-50 w-max transition-all duration-300 ease-in-out">
+        <div class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 min-h-[4rem] py-2 px-2 sm:px-4 bg-charcoal-teal rounded-3xl shadow-xl flex items-center justify-center  sm:gap-2 z-50 w-max transition-all duration-300 ease-in-out">
                     
             <a href="{% url 'dashboard' %}" class="flex flex-col items-center justify-center w-auto px-3 py-2 rounded-2xl hover:bg-mint-green hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <svg class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12.363 17.588q.162-.063.312-.188q.8-.725 1.525-1.425t1.263-1.375t.862-1.312t.325-1.238q0-1.1-.75-1.825T14.1 9.5q-.65 0-1.187.263T12 10.45q-.375-.425-.937-.687T9.9 9.5q-1.05 0-1.8.725t-.75 1.825q0 .6.325 1.238t.863 1.312T9.8 15.975t1.525 1.425q.15.125.313.188t.362.062t.363-.062M6 21q-.825 0-1.412-.587T4 19v-7.375L3 12.4q-.35.25-.75.2t-.65-.4t-.187-.75t.387-.65l8.975-6.875q.275-.2.588-.3t.637-.1t.638.1t.587.3l9 6.875q.325.25.375.65t-.2.75q-.25.325-.65.375t-.725-.2L20 11.625V19q0 .825-.587 1.413T18 21zm0-2h12v-8.9l-6-4.575L6 10.1zm0 0h12z"/></svg>
                 <p class="text-[12px] sm:text-sm mt-1 font-medium">Inicio</p>
             </a>
             
-            <a href="#" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3  0 003 3z"></path></svg>
-                <p class="text-[12px] sm:text-sm mt-1 font-medium">Calculadora</p>
+            <a href="{% url 'historial_movimientos' %}" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
+                <svg class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M8.288 12.713Q8 12.425 8 12V5.825L6.125 7.7q-.275.275-.687.275T4.725 7.7q-.3-.3-.3-.712t.3-.713L8.3 2.7q.15-.15.325-.213T9 2.425t.375.062t.325.213l3.6 3.6q.3.3.287.7t-.312.7q-.3.275-.7.288t-.7-.288L10 5.825V12q0 .425-.288.713T9 13t-.712-.288m6.337 8.8q-.175-.062-.325-.212l-3.6-3.6q-.3-.3-.287-.7t.312-.7q.3-.275.7-.288t.7.288L14 18.175V12q0-.425.288-.712T15 11t.713.288T16 12v6.175l1.875-1.875q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L15.7 21.3q-.15.15-.325.213t-.375.062t-.375-.062"/></svg>
+                <p class="text-[12px] sm:text-sm mt-1 font-medium">Movimientos</p>
             </a>
 
             <a href="#" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <svg class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 " fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 <p class="text-[12px] sm:text-sm mt-1 font-medium">Simulación</p>
             </a>
 
             <a href="{% url 'cuentas' %}" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3  0 003 3z"></path></svg>
+                <svg class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 " fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3  0 003 3z"></path></svg>
                 <p class="text-[12px] sm:text-sm mt-1 font-medium">Cuentas</p>
             </a>
 
             <a href="#" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3  0 003 3z"></path></svg>
+                <svg class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 " xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"><path fill="currentColor" d="M6 16q-.825 0-1.412-.587T4 14t.588-1.412T6 12t1.413.588T8 14t-.587 1.413T6 16m12 0q-.825 0-1.412-.587T16 14t.588-1.412T18 12t1.413.588T20 14t-.587 1.413T18 16m-6-1q-1.05 0-1.775-.725T9.5 12.5t.725-1.775T12 10t1.775.725t.725 1.775t-.725 1.775T12 15m-4.9 6q.175-.875.625-1.588t1.1-1.262t1.463-.85T12 17t1.713.3t1.462.85t1.1 1.263T16.9 21zm-3.825 0q-.525 0-.9-.35T2 19.85q0-.975 1.188-1.913T5.925 17q.425 0 .825.075t.775.225q-.75.725-1.25 1.663T5.6 21zM18.4 21q-.175-1.1-.675-2.037t-1.25-1.663q.375-.15.763-.225T18.05 17q1.55 0 2.75.938T22 19.85q0 .475-.375.813T20.7 21zM1.6 11.2q-.25-.35-.2-.75t.4-.65l8.975-6.875Q11.325 2.5 12 2.5t1.225.425L16 5.05V4.5q0-.625.438-1.062T17.5 3t1.063.438T19 4.5v2.85l3.2 2.45q.325.25.388.65t-.188.75t-.65.4t-.75-.2l-9-6.875L3 11.4q-.35.25-.75.2t-.65-.4"/></svg>
                 <p class="text-[12px] sm:text-sm mt-1 font-medium">Perfil</p>
             </a>
 

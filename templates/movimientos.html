@@ -1,0 +1,101 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Movimientos - Koin{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+
+    <!-- HEADER -->
+    <div class="flex items-center justify-between ">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'dashboard' %}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-charcoal-teal hover:bg-gray-50">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </a>
+            <h2 class="text-2xl font-bold text-deep-teal">Historial</h2>
+        </div>
+        
+        <!-- Botón de filtro (visual) -->
+        <button class="w-10 h-10 bg-pale-blue-grey rounded-xl flex items-center justify-center text-charcoal-teal">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+        </button>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="relative mb-6">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <input type="text" placeholder="Buscar movimiento..." class="w-full pl-11 pr-4 py-3 bg-white rounded-2xl outline-none text-sm text-charcoal-teal border border-transparent focus:border-mint-green shadow-sm transition-all">
+    </div>
+
+    <!-- LISTA DE MOVIMIENTOS AGRUPADOS -->
+    <!-- Magia de Django: Agrupamos por la fecha exacta (día) -->
+    {% regroup movimientos by fecha_creacion.date as movimientos_por_dia %}
+    
+    <div class="space-y-6 pb-10">
+        {% for dia in movimientos_por_dia %}
+            <div>
+                <!-- FECHA (Ej: 19 mar) -->
+                <h3 class="text-xs font-bold text-gray-500 mb-3 px-2 lowercase first-letter:uppercase">
+                    {{ dia.grouper|date:"d M" }}
+                </h3>
+                
+                <!-- CONTENEDOR DE TARJETAS DEL DÍA -->
+                <div class="space-y-3">
+                    {% for mov in dia.list %}
+                        <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-50 flex items-center justify-between hover:shadow-md transition-shadow">
+                            
+                            <div class="flex items-center gap-4">
+                                <!-- ICONO DINÁMICO (Cambia color si es Ingreso o Gasto) -->
+                                {% if mov.tipo_movimiento.nombre_movimiento == 'Ingreso' %}
+                                    <div class="w-12 h-12 rounded-2xl bg-mint-green/20 text-deep-teal flex items-center justify-center shrink-0">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                                    </div>
+                                {% else %}
+                                    <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-500 flex items-center justify-center shrink-0">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                                    </div>
+                                {% endif %}
+
+                                <!-- DETALLES -->
+                                <div class="flex flex-col">
+                                    <p class="font-bold text-charcoal-teal text-sm leading-tight">{{ mov.categoria.nombre_categoria }}</p>
+                                    <!-- Si hay descripción la mostramos, sino mostramos el nombre de la cuenta -->
+                                    <p class="text-xs text-gray-500 mt-0.5 truncate max-w-[140px]">
+                                        {{ mov.descripcion|default:mov.cuenta.nombre_cuenta }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- MONTOS Y HORA -->
+                            <div class="flex flex-col items-end">
+                                <!-- Condicional para imprimir el + o - y el color -->
+                                {% if mov.tipo_movimiento.nombre_movimiento == 'Ingreso' %}
+                                    <p class="font-bold text-green-600 text-sm">
+                                        + {{ mov.cantidad_moneda }} {{ mov.moneda.codigo }}
+                                    </p>
+                                {% else %}
+                                    <p class="font-bold text-red-500 text-sm">
+                                        - {{ mov.cantidad_moneda }} {{ mov.moneda.codigo }}
+                                    </p>
+                                {% endif %}
+                                <p class="text-[10px] text-gray-400 mt-1 font-medium">{{ mov.fecha_creacion|time:"h:i a" }}</p>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <!-- MENSAJE SI NO HAY MOVIMIENTOS -->
+            <div class="text-center py-10">
+                <div class="w-16 h-16 bg-pale-blue-grey rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                </div>
+                <p class="text-charcoal-teal font-medium">No hay movimientos registrados</p>
+                <p class="text-xs text-gray-500 mt-1">Tus ingresos y gastos aparecerán aquí.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

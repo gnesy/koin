@@ -77,7 +77,7 @@ class Cuenta(models.Model):
     color_cuenta = models.CharField(max_length=20, help_text="Código hexadecimal o nombre del color")
 
     def __str__(self):
-        return f"{self.nombre_cuenta} ({self.usuario.username})"
+        return f"{self.nombre_cuenta} | Saldo disponible: {self.saldo_inicial_cuenta} {self.moneda.codigo}"
 
 # Tabla de Categorías
 class Categoria(models.Model):

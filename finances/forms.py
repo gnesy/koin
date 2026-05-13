@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cuenta, Moneda, Usuario
+from .models import Cuenta, Moneda, Usuario, Movimiento, Categoria
 from django.contrib.auth.forms import AuthenticationForm
 
 class LoginForm(AuthenticationForm):
@@ -96,3 +96,51 @@ class CuentaForm(forms.ModelForm):
                 'class': 'w-full h-12 px-2 py-1 bg-pale-blue-grey rounded-xl outline-none cursor-pointer'
             }),
         }
+
+
+class IngresoForm(forms.ModelForm):
+    class Meta:
+        model = Movimiento
+        fields = ['cuenta', 'categoria', 'cantidad_moneda', 'descripcion']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if user:
+            self.fields['cuenta'].queryset = Cuenta.objects.filter(usuario=user)
+
+        # --- FILTRO DE CATEGORÍA AGREGADO ---
+        # Garantiza que el usuario solo pueda elegir categorías de ingresos
+        self.fields['categoria'].queryset = Categoria.objects.filter(tipo_categoria='Ingreso')
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors border border-transparent focus:border-mint-green'
+            })
+            
+        self.fields['cantidad_moneda'].widget.attrs.update({'placeholder': '0.00', 'step': '0.01'})
+        self.fields['descripcion'].widget.attrs.update({'rows': 3, 'placeholder': 'Ej: Quincena, Venta de tortas, etc.'})
+
+class GastoForm(forms.ModelForm):
+    class Meta:
+        model = Movimiento
+        fields = ['cuenta', 'categoria', 'cantidad_moneda', 'descripcion']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if user:
+            self.fields['cuenta'].queryset = Cuenta.objects.filter(usuario=user)
+
+        self.fields['categoria'].queryset = Categoria.objects.filter(tipo_categoria='Gasto')
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                # Cambiamos el focus a rojo/rosado para dar la sensación visual de "salida de dinero"
+                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors '
+            })
+            
+        self.fields['cantidad_moneda'].widget.attrs.update({'placeholder': '0.00', 'step': '0.01'})
+        self.fields['descripcion'].widget.attrs.update({'rows': 3, 'placeholder': 'Ej: Mercado semanal, Factura de luz, Condominio, etc.'})
