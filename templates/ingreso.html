@@ -20,23 +20,33 @@
         <form method="POST" class="space-y-5 mt-2">
             {% csrf_token %}
             
-            <div class="space-y-1">
+            <div class="space-y-1 group">
                 <label class="text-xs font-semibold text-charcoal-teal ml-2">¿A qué cuenta ingresa el dinero?</label>
                 {{ form.cuenta }}
             </div>
             
             <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1">
+                <div class="space-y-1 group">
                     <label class="text-xs font-semibold text-charcoal-teal ml-2">Monto</label>
                     {{ form.cantidad_moneda }}
+                    <!-- Error del backend si falla la validación -->
+                    {% if form.cantidad_moneda.errors %}
+                        <p class="text-[11px] text-red-500 font-medium ml-2 mt-1">{{ form.cantidad_moneda.errors.0 }}</p>
+                    {% endif %}
                 </div>
-                <div class="space-y-1">
+                <div class="space-y-1 group">
                     <label class="text-xs font-semibold text-charcoal-teal ml-2">Categoría</label>
                     {{ form.categoria }}
                 </div>
             </div>
 
-            <div class="space-y-1">
+            <!-- NUEVO INPUT DE FECHA -->
+            <div class="space-y-1 group">
+                <label class="text-xs font-semibold text-charcoal-teal ml-2">Fecha y Hora</label>
+                {{ form.fecha_creacion }}
+            </div>
+
+            <div class="space-y-1 group">
                 <label class="text-xs font-semibold text-charcoal-teal ml-2">Descripción (Opcional)</label>
                 {{ form.descripcion }}
             </div>

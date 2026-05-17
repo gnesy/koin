@@ -1,6 +1,7 @@
 from django import forms
 from .models import Cuenta, Moneda, Usuario, Movimiento, Categoria
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.exceptions import ValidationError
 
 class LoginForm(AuthenticationForm):
     # El campo se llama 'username' internamente para Django, pero lo configuramos como email visualmente
@@ -101,7 +102,13 @@ class CuentaForm(forms.ModelForm):
 class IngresoForm(forms.ModelForm):
     class Meta:
         model = Movimiento
-        fields = ['cuenta', 'categoria', 'cantidad_moneda', 'descripcion']
+        # 1. Agregamos la fecha de creación
+        fields = ['cuenta', 'categoria', 'cantidad_moneda', 'fecha_creacion', 'descripcion']
+        
+        # 2. Forzamos el calendario nativo
+        widgets = {
+            'fecha_creacion': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -110,22 +117,41 @@ class IngresoForm(forms.ModelForm):
         if user:
             self.fields['cuenta'].queryset = Cuenta.objects.filter(usuario=user)
 
-        # --- FILTRO DE CATEGORÍA AGREGADO ---
-        # Garantiza que el usuario solo pueda elegir categorías de ingresos
         self.fields['categoria'].queryset = Categoria.objects.filter(tipo_categoria='Ingreso')
 
         for field_name, field in self.fields.items():
             field.widget.attrs.update({
-                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors border border-transparent focus:border-mint-green'
+                # Agregamos el group-hover para la interactividad visual
+                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors border border-transparent focus:border-mint-green group-hover:border-[#05060f]'
             })
             
-        self.fields['cantidad_moneda'].widget.attrs.update({'placeholder': '0.00', 'step': '0.01'})
+        # 3. Validación Frontend: Bloquea negativos
+        self.fields['cantidad_moneda'].widget.attrs.update({
+            'placeholder': '0.00', 
+            'step': '0.01',
+            'min': '0.01',
+            'required': 'true'
+        })
         self.fields['descripcion'].widget.attrs.update({'rows': 3, 'placeholder': 'Ej: Quincena, Venta de tortas, etc.'})
+
+    # 4. Validación Backend: Protege el servidor
+    def clean_cantidad_moneda(self):
+        cantidad = self.cleaned_data.get('cantidad_moneda')
+        if cantidad is None or cantidad <= 0:
+            raise ValidationError("El monto debe ser mayor a 0.")
+        return cantidad
+
 
 class GastoForm(forms.ModelForm):
     class Meta:
         model = Movimiento
-        fields = ['cuenta', 'categoria', 'cantidad_moneda', 'descripcion']
+        # 1. Agregamos 'fecha_creacion' a la lista de campos
+        fields = ['cuenta', 'categoria', 'cantidad_moneda', 'fecha_creacion', 'descripcion']
+        
+        # 2. Forzamos a que el input de fecha sea el calendario nativo del celular/navegador
+        widgets = {
+            'fecha_creacion': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -136,11 +162,24 @@ class GastoForm(forms.ModelForm):
 
         self.fields['categoria'].queryset = Categoria.objects.filter(tipo_categoria='Gasto')
 
+        # Aplicamos el diseño a todos los campos
         for field_name, field in self.fields.items():
             field.widget.attrs.update({
-                # Cambiamos el focus a rojo/rosado para dar la sensación visual de "salida de dinero"
-                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors '
+                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors border border-transparent focus:border-red-400 group-hover:border-[#05060f]'
             })
             
-        self.fields['cantidad_moneda'].widget.attrs.update({'placeholder': '0.00', 'step': '0.01'})
+        # 3. Validación Frontend: min='0.01' bloquea los ceros y números negativos en el HTML
+        self.fields['cantidad_moneda'].widget.attrs.update({
+            'placeholder': '0.00', 
+            'step': '0.01',
+            'min': '0.01',
+            'required': 'true'
+        })
         self.fields['descripcion'].widget.attrs.update({'rows': 3, 'placeholder': 'Ej: Mercado semanal, Factura de luz, Condominio, etc.'})
+
+    # 4. Validación Backend: Si alguien burla el HTML, el servidor de Django detiene el error aquí
+    def clean_cantidad_moneda(self):
+        cantidad = self.cleaned_data.get('cantidad_moneda')
+        if cantidad is None or cantidad <= 0:
+            raise ValidationError("El monto debe ser mayor a 0.")
+        return cantidad
