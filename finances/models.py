@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.utils import timezone
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, correo_usuario, nombre_usuario, apellido_usuario, nombre_familia_usuario, password=None):
@@ -101,7 +102,7 @@ class Movimiento(models.Model):
     tipo_movimiento = models.ForeignKey(TipoMovimiento, on_delete=models.PROTECT)
     moneda = models.ForeignKey(Moneda, on_delete=models.PROTECT)
     cantidad_moneda = models.DecimalField(max_digits=15, decimal_places=2)
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_creacion = models.DateTimeField(default=timezone.now)
     descripcion = models.TextField(blank=True, null=True)
 
     def __str__(self):
