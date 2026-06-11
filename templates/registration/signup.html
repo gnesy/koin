@@ -1,92 +1,99 @@
 {% extends 'base_auth.html' %}
 {% load static %}
-
 {% block title %}Sign Up - Koin{% endblock %}
-
 {% block content %}
-<div class="w-full max-w-3xl  bg-white rounded-[32px] p-8 md:p-12 shadow-sm mx-auto">
-    <!-- LOGO -->
-    <span class="flex justify-center"><img src="{% static 'images/KOIN icono degradado.png' %}" alt="Logo Koin" width="80px"></span>
-    <!-- ENCABEZADO: "Regístrate - Koin" -->
-    <h2 class="text-3xl font-bold text-center mb-2 mt-4 text-koin-dark">Regístrate</h2>
-    <p class="text-center text-gray-500 text-sm">Crea una cuenta para gestionar las finanzas de tu familia hoy.</p>
-    <!-- FORMULARIO DE REGISTRO -->
-    <form method="POST" class="space-y-8">
+<div class="w-full max-w-md bg-white rounded-[32px] p-6 md:p-8 shadow-sm mx-auto my-auto max-h-[95vh] overflow-y-auto flex flex-col relative" style="scrollbar-width: none; -ms-overflow-style: none;">
+    <style>div::-webkit-scrollbar { display: none; }</style>
+    
+    <span class="flex justify-center shrink-0"><img src="{% static 'images/KOIN icono degradado.png' %}" alt="Logo" width="80px"></span>
+    <h2 class="text-3xl font-bold text-center mb-2 mt-4 text-koin-dark shrink-0">Regístrate</h2>
+    <p class="text-center text-gray-500 text-sm mb-6 shrink-0">Crea una cuenta para gestionar las finanzas de tu familia hoy.</p>
+    
+    <form method="POST" class="space-y-6 shrink-0">
         {% csrf_token %}
-
         {% if form.non_field_errors %}
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl text-sm text-center">
-                {{ form.non_field_errors.0 }}
-            </div>
+            <div class="bg-red-100 text-red-700 px-4 py-3 rounded-xl text-sm text-center mb-4">{{ form.non_field_errors.0 }}</div>
         {% endif %}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+            <h3 class="text-xs font-bold text-charcoal-teal uppercase tracking-wider border-b border-gray-100 pb-1">1. Datos Personales</h3>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-4 flex items-center text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></span>
+                {{ form.nombre_usuario }}
+            </div>
+            {% if form.nombre_usuario.errors %}<p class="text-red-500 text-xs ml-4">{{ form.nombre_usuario.errors.0 }}</p>{% endif %}
+
+            <div class="relative">
+                <span class="absolute inset-y-0 left-4 flex items-center text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></span>
+                {{ form.apellido_usuario }}
+            </div>
+            {% if form.apellido_usuario.errors %}<p class="text-red-500 text-xs ml-4">{{ form.apellido_usuario.errors.0 }}</p>{% endif %}
+
+            <div class="relative">
+                <span class="absolute inset-y-0 left-4 flex items-center text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></span>
+                {{ form.nombre_familia_usuario }}
+            </div>
+            {% if form.nombre_familia_usuario.errors %}<p class="text-red-500 text-xs ml-4">{{ form.nombre_familia_usuario.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div class="space-y-4 pt-2">
+            <h3 class="text-xs font-bold text-charcoal-teal uppercase tracking-wider border-b border-gray-100 pb-1">2. Datos de Acceso</h3>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-4 flex items-center text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></span>
+                {{ form.correo_usuario }}
+            </div>
+            {% if form.correo_usuario.errors %}<p class="text-red-500 text-xs ml-4">{{ form.correo_usuario.errors.0 }}</p>{% endif %}
+
+            <div class="relative">
+                <span class="absolute inset-y-0 left-4 flex items-center text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></span>
+                {{ form.password }}
+            </div>
+            {% if form.password.errors %}<div class="text-red-500 text-xs ml-4 [&>ul]:list-disc [&>ul]:pl-4">{{ form.password.errors.0|safe }}</div>{% endif %}
             
-            <div class="space-y-4">
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    </span>
-                    {{ form.nombre_usuario }}
-                    {% if form.nombre_usuario.errors %}<p class="text-red-500 text-xs ml-4 mt-1">{{ form.nombre_usuario.errors.0 }}</p>{% endif %}
-                </div>
-
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    </span>
-                    {{ form.apellido_usuario }}
-                    {% if form.apellido_usuario.errors %}<p class="text-red-500 text-xs ml-4 mt-1">{{ form.apellido_usuario.errors.0 }}</p>{% endif %}
-                </div>
-
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    </span>
-                    {{ form.nombre_familia_usuario }}
-                    {% if form.nombre_familia_usuario.errors %}<p class="text-red-500 text-xs ml-4 mt-1">{{ form.nombre_familia_usuario.errors.0 }}</p>{% endif %}
-                </div>
+            {% if form.password.help_text and not form.password.errors %}
+            <div class="ml-4 mt-1.5">
+                <button type="button" onclick="toggleSugerencias()" class="flex items-center gap-1 text-[10px] font-bold text-gray-400 hover:text-charcoal-teal transition-colors">
+                    Ver reglas de contraseña <svg id="icon-sug" class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-sug" class="hidden"><div class="text-gray-400 text-[10px] mt-1 [&>ul]:list-disc [&>ul]:pl-4">{{ form.password.help_text|safe }}</div></div>
             </div>
+            {% endif %}
 
-            <div class="space-y-4">
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </span>
-                    {{ form.correo_usuario }}
-                    {% if form.correo_usuario.errors %}<p class="text-red-500 text-xs ml-4 mt-1">{{ form.correo_usuario.errors.0 }}</p>{% endif %}
-                </div>
-
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    </span>
-                    {{ form.password }}
-                    {% if form.password.errors %}<p class="text-red-500 text-xs ml-4 mt-1">{{ form.password.errors.0 }}</p>{% endif %}
-                </div>
-
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    </span>
-                    {{ form.confirmar_password }}
-                    {% if form.confirmar_password.errors %}<p class="text-red-500 text-xs ml-4 mt-1">{{ form.confirmar_password.errors.0 }}</p>{% endif %}
-                </div>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-4 flex items-center text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></span>
+                {{ form.confirmar_password }}
             </div>
-
+            {% if form.confirmar_password.errors %}<p class="text-red-500 text-xs ml-4">{{ form.confirmar_password.errors.0 }}</p>{% endif %}
         </div>
 
-        <div class="md:w-1/2 md:mx-auto">
-            <button type="submit" class="w-full bg-mint-green text-charcoal-teal font-bold rounded-full py-4 mt-2 hover:bg-deep-teal hover:text-white transition-all shadow-md">
-                Crear Cuenta
-            </button>
+        <div class="space-y-4 pt-2">
+            <h3 class="text-xs font-bold text-charcoal-teal uppercase tracking-wider border-b border-gray-100 pb-1">3. Seguridad de Recuperación</h3>
+            <p class="text-[10px] text-gray-400 leading-tight">Selecciona una pregunta secreta. Te servirá para recuperar el acceso a tu cuenta si olvidas la contraseña.</p>
+            
+            <div>{{ form.pregunta_seguridad }}</div>
+            
+            <div>
+                {{ form.respuesta_seguridad }}
+                {% if form.respuesta_seguridad.errors %}<p class="text-red-500 text-xs ml-4 mt-1">{{ form.respuesta_seguridad.errors.0 }}</p>{% endif %}
+            </div>
         </div>
+
+        <button type="submit" class="w-full bg-mint-green text-charcoal-teal font-bold rounded-full py-4 mt-8 hover:bg-deep-teal hover:text-white transition-all shadow-md">
+            Crear Cuenta
+        </button>
     </form>
 
-    <div class="text-center mt-8">
-        <p class="text-sm text-gray-500">
-            ¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="font-semibold text-charcoal-teal hover:underline">Iniciar Sesión</a>
-        </p>
+    <div class="text-center mt-8 shrink-0">
+        <p class="text-sm text-gray-500">¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="font-semibold text-charcoal-teal hover:underline">Iniciar Sesión</a></p>
     </div>
 </div>
+
+<script>
+    function toggleSugerencias() {
+        const c = document.getElementById('content-sug');
+        const i = document.getElementById('icon-sug');
+        if (c.classList.contains('hidden')) { c.classList.remove('hidden'); i.classList.add('rotate-180'); }
+        else { c.classList.add('hidden'); i.classList.remove('rotate-180'); }
+    }
+</script>
 {% endblock %}

@@ -2,5 +2,9 @@
   {
     "type": "sqlite",
     "path": "c:\\Users\\Alvarado\\Documents\\koin\\db.sqlite3"
+  },
+  {
+    "type": "sqlite",
+    "path": "c:\\Users\\genes\\Documents\\koin\\db.sqlite3"
   }
 ]

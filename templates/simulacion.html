@@ -1,0 +1,272 @@
+{% extends 'base_dashboard.html' %}
+{% load humanize %}
+
+{% block title %}Simulador Financiero - Koin{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-md mx-auto pb-24">
+    
+    <div class="flex items-center justify-between mb-4 mt-2">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'dashboard' %}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-charcoal-teal hover:bg-gray-50">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </a>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h2 class="text-2xl font-bold text-deep-teal">Simulador Proyectivo</h2>
+                    
+                    <div class="relative group flex items-center">
+                        <svg class="w-5 h-5 text-gray-400 hover:text-deep-teal transition-colors cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+
+                        <div class="absolute top-full right-0 mt-2 w-64 p-3 bg-charcoal-teal text-white text-xs rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                            <p class="font-bold mb-1 border-b border-gray-600 pb-1">Metodología 50/30/20</p>
+                            <p class="text-gray-300 leading-tight mb-2">Este simulador proyecta tu futuro financiero organizando automáticamente tus ingresos estimados bajo esta regla: 50% para necesidades vitales, 30% para gastos personales y 20% para fondo de ahorro.</p>
+                            <a href="https://www.bbva.es/finanzas-vistazo/ef/cuentas/regla-ahorro-50-30-20.html" target="_blank" class="text-mint-green font-bold hover:underline inline-flex items-center gap-1">
+                                Saber más en BBVA 
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
+                            <div class="absolute -top-1.5 right-3 w-3 h-3 bg-charcoal-teal transform rotate-45"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 font-medium">Planificación financiera a largo plazo</p>
+            </div>
+        </div>
+    </div>
+
+    {% if error_msg %}
+    <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-2xl mb-4 text-xs font-bold flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        {{ error_msg }}
+    </div>
+    {% endif %}
+
+    <div class="bg-white p-6 rounded-3xl shadow-[0px_4px_6px_0px_rgba(0,_0,_0,_0.05)] border border-gray-50 mb-6">
+        <form method="GET" action="" class="space-y-4">
+            
+            <input type="hidden" name="gasto_activo" id="gasto_activo" value="{{ gasto_activo|default:'false' }}">
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1 group col-span-2">
+                    <label class="text-xs font-semibold text-charcoal-teal ml-2">Ingreso mensual estimado (USD)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 font-medium">$</span>
+                        <input type="number" name="monto" step="0.01" min="0.01" placeholder="Ej. 200.00" value="{{ m_solicitado }}" required 
+                               oninvalid="this.setCustomValidity('Por favor, inserte un número positivo.')" oninput="this.setCustomValidity('')"
+                               class="w-full pl-8 pr-4 h-12 bg-pale-blue-grey rounded-2xl outline-none  group-hover:border-[#05060f] transition-all text-sm font-medium text-charcoal-teal">
+                    </div>
+                </div>
+
+                <div class="space-y-1 group col-span-2">
+                    <label class="text-xs font-semibold text-charcoal-teal ml-2">Plazo a proyectar</label>
+                    <div class="relative">
+                        <input type="number" name="meses" min="1" max="24" placeholder="Ej. 6" value="{{ meses }}" required
+                               oninvalid="this.setCustomValidity('El plazo debe estar entre 1 y 24 meses.')" oninput="this.setCustomValidity('')"
+                               class="w-full px-4 h-12 bg-pale-blue-grey rounded-2xl outline-none group-hover:border-[#05060f] transition-all text-sm font-medium text-charcoal-teal">
+                        <span class="absolute inset-y-0 right-0 pr-4 flex items-center text-[10px] text-gray-400 font-bold uppercase pointer-events-none">
+                            Máx 24
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-gray-100 mt-4">
+                <button type="button" onclick="toggleGasto()" class="w-full text-left text-sm font-bold text-deep-teal tracking-wider uppercase mb-1 ml-2 flex justify-between items-center transition-colors">
+                    <span>Simular Gasto Extraordinario</span>
+                    <svg id="gasto-icon" class="w-4 h-4 transform transition-transform duration-300 {% if gasto_activo == 'true' %}rotate-180{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                
+               <div id="gasto-container" class="transition-all duration-300 overflow-hidden {% if gasto_activo != 'true' %}max-h-0 opacity-0{% else %}max-h-40 opacity-100 mt-3{% endif %}">
+                    
+                    <div class="flex gap-4">
+
+                        <div class=" group ">
+                            <p class="text-xs font-semibold text-gray-500 p-2">Gasto ($)</p>
+                            <input type="number" id="input_costo_articulo" name="costo_articulo" step="0.01" min="0.01" placeholder="Ej. 150.00" value="{{ costo_articulo }}"
+                                   oninvalid="this.setCustomValidity('Debe llenar este campo con un número positivo.')" oninput="this.setCustomValidity('')"
+                                   {% if gasto_activo == 'true' %}required{% endif %}
+                                   class="w-full px-4 h-11 bg-pale-blue-grey rounded-xl outline-none  group-hover:border-[#05060f] transition-all text-xs font-medium text-charcoal-teal">
+                        </div>
+                        
+                        <div class=" group">
+                            <p class="text-xs font-semibold text-gray-500 p-2">¿A qué fondo afecta?</p>
+                            <div class="flex items-center justify-start gap-2 px-2 py-1">
+
+                                <div class="relative">
+                                    <input type="radio" name="fondo_afectado" id="f_50" value="necesidades" class="hidden peer" {% if fondo == 'necesidades' or not fondo %}checked{% endif %}>
+                                    <label for="f_50" class="flex flex-col items-center justify-center rounded-xl px-3 py-2 gap-1 bg-pale-blue-grey text-charcoal-teal peer-checked:bg-deep-teal peer-checked:text-white peer-checked:border-blue-600 transition-all cursor-pointer shadow-sm group-hover:border-gray-200">
+                                        <span class="text-sm">50%</span>
+                                    </label>
+                                </div>
+                                <div class="relative">
+                                    <input type="radio" name="fondo_afectado" id="f_30" value="deseos" class="hidden peer" {% if fondo == 'deseos' %}checked{% endif %}>
+                                    <label for="f_30" class="flex flex-col items-center justify-center rounded-xl px-3 py-2 gap-1 bg-pale-blue-grey text-charcoal-teal peer-checked:bg-deep-teal peer-checked:text-white peer-checked:border-yellow-600 transition-all cursor-pointer shadow-sm group-hover:border-gray-200">
+                                        <span class="text-sm">30%</span>
+                                    </label>
+                                </div>
+                                <div class="relative">
+                                    <input type="radio" name="fondo_afectado" id="f_20" value="ahorro" class="hidden peer" {% if fondo == 'ahorro' %}checked{% endif %}>
+                                    <label for="f_20" class="flex flex-col items-center justify-center rounded-xl px-3 py-2 gap-1 bg-pale-blue-grey text-charcoal-teal peer-checked:bg-deep-teal peer-checked:text-white peer-checked:border-green-600 transition-all cursor-pointer shadow-sm group-hover:border-gray-200">
+                                        <span class="text-sm">20%</span>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" class="w-full h-12 bg-deep-teal text-white font-bold rounded-2xl hover:bg-charcoal-teal transition-all shadow-sm flex items-center justify-center gap-2 text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    Proyectar
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    {% if ingreso_simulado > 0 %}
+    
+    <div id="resultados-proyeccion" class="space-y-5 pb-12 scroll-mt-6">
+        
+        <div class="flex items-center justify-between px-2">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Presupuesto acumulado a {{ meses }} meses:</h3>
+        </div>
+
+         {% if costo_articulo_float > 0 %}
+            {% if es_viable %}
+                <div class="bg-charcoal-teal rounded-3xl p-5 flex gap-4 items-start shadow-md">
+                    <div class="w-10 h-10 rounded-full bg-mint-green/20 flex items-center justify-center shrink-0 text-mint-green font-black text-xs shadow-sm">
+                        {{ meses_necesarios }}M
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-bold text-mint-green uppercase tracking-wide">Planificación Temporal: Alcanzable</p>
+                        <p class="text-xs text-gray-300 mt-1.5 leading-relaxed">
+                            Para cubrir el costo de este artículo (<span class="font-semibold text-white">{{ costo_articulo_float|intcomma }} $</span>) utilizando exclusivamente tu fondo de <span class="font-semibold text-mint-green">{{ nombre_fondo }}</span>, **deben transcurrir exactamente {{ meses_necesarios }} meses** de ahorro retenido.
+                        </p>
+                        <p class="text-[11px] text-gray-300 mt-2.5 bg-white/5 p-2.5 rounded-xl border border-gray-600">
+                            Como tu plazo de proyección es de <span class="font-bold text-white">{{ meses }} meses</span>, logras la meta con éxito y te quedará un colchón libre de <span class="font-bold text-mint-green">{{ remanente_articulo|intcomma }} $</span> dentro de esa categoría al cerrar el período.
+                        </p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="bg-charcoal-teal rounded-3xl p-5 flex gap-4 items-start shadow-md">
+                    <div class="w-10 h-10 rounded-full bg-warm-yellow/20 flex items-center justify-center shrink-0 text-warm-yellow font-black text-xs shadow-sm">
+                        {{ meses_necesarios }}M
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-bold text-warm-yellow uppercase tracking-wide">Planificación Temporal: Plazo Insuficiente</p>
+                        <p class="text-xs text-gray-300 mt-1.5 leading-relaxed">
+                            Con tu planificación actual a <span class="font-semibold text-white">{{ meses }} meses</span>, este fondo específico solo acumulará <span class="font-semibold text-white">{{ fondo_evaluado|intcomma }} $</span>, dejándote un déficit insatisfecho de <span class="font-bold text-red-400">{{ falta_dinero|intcomma }} $</span>.
+                        </p>
+                        <div class="text-[11px] text-gray-300 mt-2.5 bg-white/5 p-2.5 rounded-xl border border-gray-600 leading-normal">
+                            💡 <span class="font-bold text-white">Estrategia sugerida:</span> Para adquirir este artículo sin provocar un desajuste o endeudamiento en el hogar, **deben transcurrir exactamente <span class="text-warm-yellow">{{ meses_necesarios }} meses</span>** de aportes constantes en la categoría de {{ nombre_fondo }}.
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        
+        <div class="bg-charcoal-teal rounded-3xl p-5 shadow-md text-white mb-4">
+            <p class="text-xs font-bold text-mint-green uppercase tracking-wider mb-4">Resumen General a {{ meses }} meses</p>
+    
+            <div class="grid grid-cols-2 gap-4 divide-x divide-gray-600">
+                <div class="pr-2">
+                    <p class="text-[10px] text-gray-400 mb-1">Capital Total Proyectado</p>
+                    <p class="text-xl font-black">{{ ingreso_proyectado_usd|intcomma }} <span class="text-xs text-gray-400">USD</span></p>
+                    <p class="text-[11px] font-medium text-gray-400 mt-1">{{ ingreso_proyectado_ves|intcomma }} VES</p>
+                </div>
+        
+                <div class="pl-4">
+                    <p class="text-[10px] text-gray-400 mb-1">Gastos Unificados (80%)</p>
+                    <p class="text-lg font-bold text-red-300">{{ gastos_totales_usd|intcomma }} <span class="text-xs text-red-300/60">USD</span></p>
+                    <p class="text-[11px] font-medium text-gray-400 mt-1">{{ gastos_totales_ves|intcomma }} VES</p>
+                    
+                    <div class="mt-2 pt-2 border-t border-gray-600 border-dashed">
+                        <p class="text-[10px] text-gray-400 mb-1">Ahorro (20%)</p>
+                        <p class="text-lg font-bold text-mint-green">{{ ahorro_usd|intcomma }} <span class="text-xs text-mint-green/60">USD</span></p>
+                        <p class="text-[11px] font-medium text-gray-400 mt-1">{{ ahorro_ves|intcomma }} VES</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-charcoal-teal p-5 rounded-3xl shadow-sm relative">
+            <div class="flex justify-between items-start mb-1">
+                <p class="text-xl font-bold text-mint-green uppercase tracking-wider">50% Necesidades Vitales</p>
+            </div>
+            <p class="text-sm text-gray-400 mb-3">Cobertura de alimentación, vivienda, servicios básicos públicos y transporte comunitario.</p>
+            <div class="flex flex-col justify-between">
+                <p class="text-4xl font-bold text-white">{{ necesidades_usd|intcomma }} <span class="text-sm font-bold text-gray-400">USD</span></p>
+                <p class="text-sm font-bold text-gray-400 px-1 py-1">{{ necesidades_ves|intcomma }} VES</p>
+            </div>
+        </div>
+
+        <div class="bg-charcoal-teal p-5 rounded-3xl shadow-sm  relative">
+            <div class="flex justify-between items-start mb-1">
+                <p class="text-xl font-bold text-warm-yellow uppercase tracking-wider">30% Gastos Personales</p>
+            </div>
+            <p class="text-sm text-gray-400 mb-3">Capital destinado a vestimenta, recreación familiar, educación y mitigación de imprevistos menores.</p>
+            <div class="flex flex-col justify-between ">
+                <p class="text-4xl font-bold text-white">{{ deseos_usd|intcomma }} <span class="text-sm font-bold text-gray-400">USD</span></p>
+                <p class="text-sm font-bold text-gray-400 px-1 py-1">{{ deseos_ves|intcomma }} VES</p>
+            </div>
+        </div>
+
+        <div class="bg-charcoal-teal p-5 rounded-3xl shadow-sm  relative overflow-hidden">
+            
+            <div class="flex justify-between items-start mb-1">
+                <p class="text-xl font-bold text-mint-green uppercase tracking-wider">20% Reserva</p>
+            </div>
+            <p class="text-sm text-gray-400 mb-3">Colchón financiero sugerido para amortiguar contingencias severas de salud o amortización de deudas contraídas.</p>
+            <div class="flex flex-col justify-between">
+                <p class="text-4xl font-bold text-white">{{ ahorro_usd|intcomma }} <span class="text-sm font-bold text-deep-teal/40">USD</span></p>
+                <p class="text-sm font-bold text-gray-400 px-1 py-1">{{ ahorro_ves|intcomma }} VES</p>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const resultados = document.getElementById("resultados-proyeccion");
+            if (resultados) {
+                resultados.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+
+        function toggleGasto() {
+            const container = document.getElementById('gasto-container');
+            const icon = document.getElementById('gasto-icon');
+            const gastoActivoInput = document.getElementById('gasto_activo');
+            const inputCosto = document.getElementById('input_costo_articulo');
+            
+            if (container.classList.contains('max-h-0')) {
+                container.classList.remove('max-h-0', 'opacity-0');
+                container.classList.add('max-h-64', 'opacity-100', 'mt-3');
+                icon.classList.add('rotate-180');
+                
+                gastoActivoInput.value = 'true';
+                inputCosto.required = true; 
+            } else {
+                container.classList.add('max-h-0', 'opacity-0');
+                container.classList.remove('max-h-64', 'opacity-100', 'mt-3');
+                icon.classList.remove('rotate-180');
+                
+                gastoActivoInput.value = 'false';
+                inputCosto.required = false; 
+                inputCosto.value = '';
+                inputCosto.setCustomValidity(''); 
+            }
+        }
+    </script>
+
+</div>
+{% endblock %}

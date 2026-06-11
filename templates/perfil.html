@@ -1,0 +1,158 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Mi Perfil - Koin{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto pb-12">
+    
+    <div class="flex items-center gap-4 mb-6 mt-2">
+        <a href="{% url 'dashboard' %}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-charcoal-teal hover:bg-gray-50">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </a>
+        <div>
+            <h2 class="text-2xl font-bold text-deep-teal">Mi Perfil</h2>
+            <p class="text-sm text-deep-teal/50 font-medium">Administra tus credenciales</p>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <p class="font-bold">{{ message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="bg-white p-6 rounded-3xl shadow-[0px_4px_6px_0px_rgba(0,_0,_0,_0.05)] border border-gray-50 mb-6">
+        <button type="button" onclick="toggleSeccion('perfil')" class="w-full flex justify-between items-center focus:outline-none">
+            <h3 class="text-sm font-bold text-gray-800">Información del Núcleo Familiar</h3>
+            <svg id="icon-perfil" class="w-5 h-5 text-gray-500 transform transition-transform duration-300 {% if form_perfil.errors %}rotate-180{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        
+        <div id="content-perfil" class="transition-all duration-500 overflow-hidden {% if form_perfil.errors %}max-h-[1000px] opacity-100{% else %}max-h-0 opacity-0{% endif %}">
+            <div class="pt-4 border-t border-gray-100 mt-4">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="space-y-4">
+                        
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-charcoal-teal ml-2">Nombre</label>
+                            {{ form_perfil.nombre_usuario }}
+                            {% if form_perfil.nombre_usuario.errors %}
+                                <p class="text-[11px] text-red-500 font-medium ml-2 mt-1">{{ form_perfil.nombre_usuario.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-charcoal-teal ml-2">Apellido</label>
+                            {{ form_perfil.apellido_usuario }}
+                            {% if form_perfil.apellido_usuario.errors %}
+                                <p class="text-[11px] text-red-500 font-medium ml-2 mt-1">{{ form_perfil.apellido_usuario.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-charcoal-teal ml-2">Nombre de tu Familia</label>
+                            {{ form_perfil.nombre_familia_usuario }}
+                            {% if form_perfil.nombre_familia_usuario.errors %}
+                                <p class="text-[11px] text-red-500 font-medium ml-2 mt-1">{{ form_perfil.nombre_familia_usuario.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-charcoal-teal ml-2">Correo Electrónico (Login)</label>
+                            {{ form_perfil.correo_usuario }}
+                            {% if form_perfil.correo_usuario.errors %}
+                                <p class="text-[11px] text-red-500 font-medium ml-2 mt-1">{{ form_perfil.correo_usuario.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" name="btn_guardar_perfil" class="w-full bg-mint-green text-charcoal-teal font-bold rounded-xl py-3 mt-2 hover:bg-deep-teal hover:text-white transition-all shadow-sm">
+                            Guardar Datos
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-3xl shadow-[0px_4px_6px_0px_rgba(0,_0,_0,_0.05)] border border-gray-50 mb-6 relative overflow-hidden">
+        <button type="button" onclick="toggleSeccion('seguridad')" class="w-full flex justify-between items-center mt-1 focus:outline-none">
+            <h3 class="text-sm font-bold text-gray-800">Seguridad de la Cuenta</h3>
+            <svg id="icon-seguridad" class="w-5 h-5 text-gray-500 transform transition-transform duration-300 {% if form_password.errors or form_password.non_field_errors %}rotate-180{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        
+        <div id="content-seguridad" class="transition-all duration-500 overflow-hidden {% if form_password.errors or form_password.non_field_errors %}max-h-[1000px] opacity-100{% else %}max-h-0 opacity-0{% endif %}">
+            <div class="pt-4 border-t border-gray-100 mt-4">
+                {% if form_password.non_field_errors %}
+                    <div class="bg-red-50 text-red-600 text-[11px] p-2 rounded-lg mb-3">
+                        {{ form_password.non_field_errors.0 }}
+                    </div>
+                {% endif %}
+
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="space-y-4">
+                        {% for field in form_password %}
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-charcoal-teal ml-2">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <p class="text-[11px] text-red-500 font-medium ml-2 mt-1">{{ field.errors.0 }}</p>
+                            {% endif %}
+                            
+                            {% if field.help_text %}
+                                <div class="text-[10px] text-gray-500 ml-2 mt-1.5 pr-2 leading-relaxed [&>ul]:list-disc [&>ul]:pl-4 [&>ul>li]:mt-1">
+                                    {{ field.help_text|safe }}
+                                </div>
+                            {% endif %}
+                            
+                        </div>
+                        {% endfor %}
+
+                        <button type="submit" name="btn_cambiar_password" class="w-full bg-charcoal-teal text-white font-bold rounded-xl py-3 mt-2 hover:bg-deep-teal transition-all shadow-sm">
+                            Actualizar Contraseña
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-red-50 p-6 rounded-3xl border border-red-100 mb-6">
+        <h3 class="text-sm font-bold text-red-800 mb-2">Cerrar Sesión</h3>
+        <p class="text-xs text-red-700/80 mb-4 leading-relaxed">Cerrarás la sesión activa en este dispositivo. Deberás ingresar tu correo y contraseña para volver a entrar.</p>
+        
+        <form method="POST" action="{% url 'salir' %}" class="w-full">
+            {% csrf_token %}
+            <button type="submit" class="w-full bg-red-500 text-white font-bold rounded-xl py-3 hover:bg-red-600 transition-all shadow-sm flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Salir de Koin
+            </button>
+        </form>
+    </div>
+
+    <script>
+        function toggleSeccion(id) {
+            const content = document.getElementById('content-' + id);
+            const icon = document.getElementById('icon-' + id);
+
+            if (content.classList.contains('max-h-0')) {
+                // Abrir
+                content.classList.remove('max-h-0', 'opacity-0');
+                content.classList.add('max-h-[1000px]', 'opacity-100');
+                icon.classList.add('rotate-180');
+            } else {
+                // Cerrar
+                content.classList.add('max-h-0', 'opacity-0');
+                content.classList.remove('max-h-[1000px]', 'opacity-100');
+                icon.classList.remove('rotate-180');
+            }
+        }
+    </script>
+
+</div>
+{% endblock %}

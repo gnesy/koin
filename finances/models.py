@@ -36,6 +36,20 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     nombre_usuario = models.CharField(max_length=100)
     apellido_usuario = models.CharField(max_length=100)
     nombre_familia_usuario = models.CharField(max_length=150)
+    # ... tus campos anteriores de Usuario (correo, nombre, etc) ...
+
+    # 1. Definimos las 3 preguntas predeterminadas
+    PREGUNTAS_CHOICES = [
+        ('mascota', '¿Cuál fue el nombre de tu primera mascota?'),
+        ('ciudad', '¿En qué ciudad nació tu madre?'),
+        ('apodo', '¿Cuál era tu apodo en la infancia?'),
+    ]
+    
+    # 2. Agregamos los dos campos nuevos al usuario
+    pregunta_seguridad = models.CharField(max_length=20, choices=PREGUNTAS_CHOICES, default='mascota')
+    respuesta_seguridad = models.CharField(max_length=150, default='')
+
+    # ... el resto de tu clase Usuario (objects, USERNAME_FIELD, Meta, etc) ...
     
     # Campos obligatorios para el funcionamiento de Django Admin
     # is_active = models.BooleanField(default=True)
@@ -52,19 +66,10 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.correo_usuario} - {self.nombre_familia_usuario}"
 
-# Extensión del usuario para el Jefe de Familia
-""" class PerfilFamilia(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    nombre_familia = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"Familia {self.nombre_familia}" """
-
 # Tabla de Monedas
 class Moneda(models.Model):
     codigo = models.CharField(max_length=5, unique=True) # Ej: USD, VES
     nombre_moneda = models.CharField(max_length=50)
-    tasa_cambio = models.DecimalField(max_digits=18, decimal_places=4)
 
     def __str__(self):
         return self.codigo
@@ -107,3 +112,4 @@ class Movimiento(models.Model):
 
     def __str__(self):
         return f"{self.tipo_movimiento} - {self.cantidad_moneda}"
+    
