@@ -19,7 +19,8 @@ from finances.forms import (
     CustomPasswordChangeForm, 
     RestablecerPasswordForm, 
     RecuperarCorreoForm, 
-    RecuperarRespuestaForm
+    RecuperarRespuestaForm,
+    CambiarPreguntaSeguridadForm
 )
 from finances.models import (
     Cuenta, 
@@ -321,11 +322,17 @@ def transferencia_view(request):
     return render(request, 'transferencia.html', {'form': form})
 
 @login_required
+# Asegúrate de importar el nuevo formulario en la parte superior:
+# from .forms import ..., CambiarPreguntaSeguridadForm
+
+@login_required
 def perfil_view(request):
     usuario = request.user
     
     form_perfil = EditarPerfilForm(instance=usuario)
     form_password = CustomPasswordChangeForm(user=usuario)
+    # NUEVO: Instanciamos el formulario de la pregunta de seguridad
+    form_pregunta = CambiarPreguntaSeguridadForm(instance=usuario)
     
     if request.method == 'POST':
         if 'btn_guardar_perfil' in request.POST:
@@ -343,12 +350,22 @@ def perfil_view(request):
                 messages.success(request, "Tu contraseña ha sido modificada con éxito.")
                 return redirect('perfil')
 
+        # NUEVO: Procesamos el guardado de la pregunta de seguridad
+        elif 'btn_cambiar_pregunta' in request.POST:
+            form_pregunta = CambiarPreguntaSeguridadForm(request.POST, instance=usuario)
+            if form_pregunta.is_valid():
+                form_pregunta.save()
+                messages.success(request, "Tu pregunta de seguridad ha sido actualizada correctamente.")
+                return redirect('perfil')
+
     contexto = {
         'form_perfil': form_perfil,
         'form_password': form_password,
+        'form_pregunta': form_pregunta,
     }
     
     return render(request, 'perfil.html', contexto)
+
 
 @login_required
 def salir_view(request):

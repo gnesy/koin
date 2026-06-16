@@ -11,8 +11,7 @@
             </div>
             <div class="flex items-center gap-3">
                 
-                <!-- SIGNOUT -->
-                 <div class="flex flex-col items-center gap-2">
+                <div class="flex flex-col items-center gap-2">
                     <form method="POST" action="{% url 'logout' %}">
                     {% csrf_token %}
                         <button type="submit" class=" flex flex-col items-center text-gray-500 hover:text-red-500 p-2 transition-colors">
@@ -33,8 +32,8 @@
             {% block content %} 
             {% endblock %}
         </main>
-        <!-- ESTE ES EL DIV DEL DOCK BAR CORREGIDO -->
-        <div class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 min-h-[4rem] py-2 px-2 sm:px-4 bg-charcoal-teal rounded-3xl shadow-xl flex items-center justify-center  sm:gap-2 z-50 w-max transition-all duration-300 ease-in-out">
+        
+        <div class="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 min-h-[4rem] pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 px-2 sm:px-4 bg-charcoal-teal rounded-3xl shadow-xl flex items-center justify-center  sm:gap-2 z-50 w-max transition-all duration-300 ease-in-out">
                     
             <a href="{% url 'dashboard' %}" class="flex flex-col items-center justify-center w-auto px-3 py-2 rounded-2xl hover:bg-mint-green hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
                 <svg class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12.363 17.588q.162-.063.312-.188q.8-.725 1.525-1.425t1.263-1.375t.862-1.312t.325-1.238q0-1.1-.75-1.825T14.1 9.5q-.65 0-1.187.263T12 10.45q-.375-.425-.937-.687T9.9 9.5q-1.05 0-1.8.725t-.75 1.825q0 .6.325 1.238t.863 1.312T9.8 15.975t1.525 1.425q.15.125.313.188t.362.062t.363-.062M6 21q-.825 0-1.412-.587T4 19v-7.375L3 12.4q-.35.25-.75.2t-.65-.4t-.187-.75t.387-.65l8.975-6.875q.275-.2.588-.3t.637-.1t.638.1t.587.3l9 6.875q.325.25.375.65t-.2.75q-.25.325-.65.375t-.725-.2L20 11.625V19q0 .825-.587 1.413T18 21zm0-2h12v-8.9l-6-4.575L6 10.1zm0 0h12z"/></svg>
@@ -56,7 +55,7 @@
                 <p class="text-[12px] sm:text-sm mt-1 font-medium">Cuentas</p>
             </a>
 
-            <a href="{% url 'perfil' %}" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-gray-300 rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
+            <a href="{% url 'perfil' %}" class="flex flex-col items-center justify-center w-auto px-3 py-2 hover:bg-mint-green rounded-2xl hover:text-charcoal-teal text-white/60 hover:scale-105 transition-all">
                 <svg class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 " xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"><path fill="currentColor" d="M6 16q-.825 0-1.412-.587T4 14t.588-1.412T6 12t1.413.588T8 14t-.587 1.413T6 16m12 0q-.825 0-1.412-.587T16 14t.588-1.412T18 12t1.413.588T20 14t-.587 1.413T18 16m-6-1q-1.05 0-1.775-.725T9.5 12.5t.725-1.775T12 10t1.775.725t.725 1.775t-.725 1.775T12 15m-4.9 6q.175-.875.625-1.588t1.1-1.262t1.463-.85T12 17t1.713.3t1.462.85t1.1 1.263T16.9 21zm-3.825 0q-.525 0-.9-.35T2 19.85q0-.975 1.188-1.913T5.925 17q.425 0 .825.075t.775.225q-.75.725-1.25 1.663T5.6 21zM18.4 21q-.175-1.1-.675-2.037t-1.25-1.663q.375-.15.763-.225T18.05 17q1.55 0 2.75.938T22 19.85q0 .475-.375.813T20.7 21zM1.6 11.2q-.25-.35-.2-.75t.4-.65l8.975-6.875Q11.325 2.5 12 2.5t1.225.425L16 5.05V4.5q0-.625.438-1.062T17.5 3t1.063.438T19 4.5v2.85l3.2 2.45q.325.25.388.65t-.188.75t-.65.4t-.75-.2l-9-6.875L3 11.4q-.35.25-.75.2t-.65-.4"/></svg>
                 <p class="text-[12px] sm:text-sm mt-1 font-medium">Perfil</p>
             </a>

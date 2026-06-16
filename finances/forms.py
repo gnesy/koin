@@ -31,6 +31,7 @@ class LoginForm(AuthenticationForm):
 class RegistroUsuarioForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
+            'id': 'password_id',
             'placeholder': 'Contraseña',
             'class': 'w-full pl-12 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'
         }),
@@ -39,6 +40,7 @@ class RegistroUsuarioForm(forms.ModelForm):
     
     confirmar_password = forms.CharField(
         widget=forms.PasswordInput(attrs={
+            'id': 'confirmar_password_id',
             'placeholder': 'Confirmar contraseña',
             'class': 'w-full pl-12 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'
         })
@@ -54,8 +56,8 @@ class RegistroUsuarioForm(forms.ModelForm):
             'apellido_usuario': forms.TextInput(attrs={'placeholder': 'Apellido', 'class': 'w-full pl-12 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'}),
             'nombre_familia_usuario': forms.TextInput(attrs={'placeholder': 'Nombre de la familia', 'class': 'w-full pl-12 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'}),
             'correo_usuario': forms.EmailInput(attrs={'placeholder': 'Correo electrónico', 'class': 'w-full pl-12 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'}),
-            'pregunta_seguridad': forms.Select(attrs={'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors text-sm text-gray-500'}),
-            'respuesta_seguridad': forms.TextInput(attrs={'placeholder': 'Escribe tu respuesta secreta', 'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors'}),
+            'pregunta_seguridad': forms.Select(attrs={'class': 'w-full pl-4 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'}),
+            'respuesta_seguridad': forms.TextInput(attrs={'placeholder': 'Escribe tu respuesta secreta', 'class': 'w-full pl-12 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'}),
         }
 
     # Validamos que la respuesta se guarde SIEMPRE en minúsculas y sin espacios extra 
@@ -118,6 +120,48 @@ class RecuperarRespuestaForm(forms.Form):
         return respuesta
 
 class CuentaForm(forms.ModelForm):
+    moneda = forms.ModelChoiceField(
+        queryset=Moneda.objects.all(),
+        empty_label="Seleccione la moneda",
+        widget=forms.Select(attrs={
+            'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors',
+            'required': 'true'
+        })
+    )
+
+    class Meta:
+        model = Cuenta
+        fields = ['nombre_cuenta', 'moneda', 'saldo_inicial_cuenta', 'color_cuenta']
+        
+        widgets = {
+            'nombre_cuenta': forms.TextInput(attrs={
+                'placeholder': 'Ej: Cuenta Nómina, Ahorros', 
+                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors',
+                'maxlength': '50',
+                'required': 'true'
+            }),
+            'saldo_inicial_cuenta': forms.NumberInput(attrs={
+                'placeholder': '0.00', 
+                'class': 'w-full px-4 py-3 bg-pale-blue-grey rounded-xl outline-none transition-colors', 
+                'step': '0.01',
+                'min': '0'
+            }),
+            # MODIFICACIÓN: Ocultamos el campo tradicional y le damos el color oscuro por defecto
+            'color_cuenta': forms.TextInput(attrs={
+                'type': 'hidden',
+                'value': '#16232C'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['saldo_inicial_cuenta'].required = False
+
+    def clean_saldo_inicial_cuenta(self):
+        saldo = self.cleaned_data.get('saldo_inicial_cuenta')
+        if saldo is None:
+            return 0.00
+        return saldo
     moneda = forms.ModelChoiceField(
         queryset=Moneda.objects.all(),
         empty_label="Seleccione la moneda",
@@ -350,3 +394,24 @@ class RestablecerPasswordForm(forms.Form):
         if password and confirmar_password and password != confirmar_password:
             self.add_error('confirmar_password', "Las contraseñas no coinciden.")
         return cleaned_data
+    
+class CambiarPreguntaSeguridadForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['pregunta_seguridad', 'respuesta_seguridad']
+        
+        widgets = {
+            'pregunta_seguridad': forms.Select(attrs={
+                'class': 'w-full pl-12 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'
+            }),
+            'respuesta_seguridad': forms.TextInput(attrs={
+                'placeholder': 'Escribe tu nueva respuesta secreta', 
+                'class': 'w-full pl-12 pr-4 py-3 bg-pale-blue-grey rounded-full outline-none transition-colors'
+            }),
+        }
+
+    def clean_respuesta_seguridad(self):
+        respuesta = self.cleaned_data.get('respuesta_seguridad')
+        if respuesta:
+            return respuesta.strip().lower()
+        return respuesta

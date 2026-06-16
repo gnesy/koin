@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib.auth.views import LogoutView
 from django.views.generic import RedirectView
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 # Importaciones locales
 from simulation.views import simulacion_view
@@ -43,9 +43,10 @@ from finances.views import (
 )
 
 urlpatterns = [
-    path('simulacion/', simulacion_view, name='simulacion'),
-    path('', RedirectView.as_view(pattern_name='login'), name='raiz'),
     path('admin/', admin.site.urls),
+    path('', include('pwa.urls')),
+    path('', RedirectView.as_view(pattern_name='login'), name='raiz'),
+    path('simulacion/', simulacion_view, name='simulacion'),
     path('panel-financiero/', dashboard, name='dashboard'),
     path('iniciar-sesion/', login_view, name='login'),
     path('registro/', registro_usuario, name='registro'),
@@ -61,7 +62,6 @@ urlpatterns = [
     path('salir/', salir_view, name='salir'),
     path('movimientos/editar/<int:mov_id>/', editar_movimiento_view, name='editar_movimiento'),
     path('movimientos/eliminar/<int:mov_id>/', eliminar_movimiento_view, name='eliminar_movimiento'),
-   #  path('recuperar-cuenta/restablecer/', restablecer_password_view, name='restablecer_password'),
     path('recuperar/', recuperar_correo_view, name='recuperar_correo'),
     path('recuperar/pregunta/', recuperar_pregunta_view, name='recuperar_pregunta'),
     path('recuperar/nueva-clave/', recuperar_nueva_clave_view, name='recuperar_nueva_clave'),

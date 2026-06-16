@@ -1,10 +1,14 @@
+{% load static %} {% load pwa %} 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Koin{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/icon-512.png' %}">
     <script src="https://cdn.tailwindcss.com"></script>
+    {% progressive_web_app_meta %}
     <script>
         tailwind.config = {
             theme: {
@@ -23,6 +27,15 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    /* Ocultar el ícono de revelar contraseña predeterminado en Edge/Windows */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+</style>
 </head>
 <body class="text-deep-teal antialiased h-[100dvh]">
     {% block layout %}{% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base_dashboard.html' %}
 {% load humanize %}
 {% load color_filters %}
-{% block title %}Dashboard - Koin{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 <div class="max-w-md mx-auto space-y-6 pb-8">
@@ -12,6 +12,27 @@
             <h2>Jefe de la Familia {{ familia }}</h2>
         </div>
     </div>
+    {% if total_cuentas == 0 %}
+    <div class="bg-amber-50/60 border border-amber-200 rounded-3xl p-4 shadow-sm flex gap-3.5 items-start">
+        <div class="w-9 h-9 rounded-2xl bg-warm-yellow/20 text-warm-yellow flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+        </div>
+        <div class="flex-1">
+            <p class="text-xs font-bold text-gray-700 uppercase tracking-wide">Configuración Requerida</p>
+            <p class="text-xs text-gray-500 mt-1 leading-normal">
+                Aún no has registrado ninguna cuenta de ahorros o efectivo. Necesitas registrar al menos una para poder empezar a organizar tus ingresos, gastos o transferencias.
+            </p>
+            <a href="{% url 'cuentas' %}" class="inline-flex items-center gap-1 text-xs font-bold text-deep-teal hover:text-charcoal-teal mt-2.5 transition-colors">
+                Registrar mi primera cuenta
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="bg-white rounded-3xl p-5 text-charcoal-teal shadow-[0px_4px_6px_0px_rgba(0,_0,_0,_0.1)] relative">
         <div class="flex flex-col gap-5">
@@ -74,7 +95,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24"><path fill="currentColor" d="M11 14.2V6q0-.425.288-.712T12 5t.713.288T13 6v8.2l2.9-2.9q.275-.275.7-.275t.7.275t.275.7t-.275.7l-4.6 4.6q-.3.3-.7.3t-.7-.3l-4.6-4.6q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275z"/></svg>
                 <p class="text-sm">Gastos</p>
             </a>
-            <a class="font-bold bg-gray-300 hover:bg-gray-400 hover:scale-105 rounded-lg w-24  gap-1 flex flex-col items-center p-2" href="{% url 'registrar_transferencia' %}">
+            <a class="font-bold bg-mint-green/80 hover:bg-mint-green hover:scale-105 rounded-lg w-24  gap-1 flex flex-col items-center p-2" href="{% url 'registrar_transferencia' %}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 16 16"><path fill="currentColor" d="M10.28 1.72a.75.75 0 1 0-1.06 1.06L10.44 4H3.75a.75.75 0 0 0 0 1.5h6.69L9.22 6.72a.75.75 0 0 0 1.06 1.06l2.5-2.5a.75.75 0 0 0 0-1.06zm-3.5 7.56a.75.75 0 0 0-1.06-1.06l-2.5 2.5a.75.75 0 0 0 0 1.06l2.5 2.5a.75.75 0 0 0 1.06-1.06L5.56 12h6.69a.75.75 0 0 0 0-1.5H5.56z"/></svg>
                 <p class="text-xs">Transferencias</p>
             </a>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'finances',
     'simulation',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +155,33 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# ==========================================
+# CONFIGURACIÓN DE PWA (Koin)
+# ==========================================
+PWA_APP_NAME = 'Koin'
+PWA_APP_DESCRIPTION = "Gestión financiera para el núcleo familiar."
+PWA_APP_THEME_COLOR = '#062F35' # Tu color deep-teal
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone' # Esto oculta la barra del navegador (parecerá app nativa)
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'portrait' # Bloquea la app en modo vertical
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = '#062F35'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/icon-512.png', # Usa el icono que ya tienes
+        'sizes': '512x512',
+        'type': 'image/png'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/images/icon-512.png',
+        'sizes': '512x512',
+        'type': 'image/png'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'es-ve'
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'mi_serviceworker.js')
