@@ -28,7 +28,7 @@
 
     <div class="bg-white p-6 rounded-3xl shadow-[0px_4px_6px_0px_rgba(0,_0,_0,_0.1)] relative overflow-hidden">
        <div class="absolute top-0 left-0 w-full h-2 bg-red-400"></div>
-        <form method="POST" class="space-y-5 mt-2">
+        <form method="POST" class="space-y-5 mt-2 form-con-bloqueo">
             {% csrf_token %}
             
             <div class="space-y-1 group">
@@ -72,7 +72,7 @@
                 {% endif %}
             </div>
 
-            <button type="submit" class="w-full flex justify-center items-center gap-2 bg-red-400 text-white font-bold rounded-full py-4 mt-6 hover:bg-red-500 transition-all shadow-md">
+            <button type="submit" class="btn-guardar w-full flex justify-center items-center gap-2 bg-red-400 text-white font-bold rounded-full py-4 mt-6 hover:bg-red-500 transition-all shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24"><path fill="currentColor" d="M11 14.2V6q0-.425.288-.712T12 5t.713.288T13 6v8.2l2.9-2.9q.275-.275.7-.275t.7.275t.275.7t-.275.7l-4.6 4.6q-.3.3-.7.3t-.7-.3l-4.6-4.6q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275z"/></svg>
                 Confirmar Gasto
             </button>
@@ -81,13 +81,35 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Lógica para bloquear fechas futuras
+            // Lógica para bloquear fechas futuras (CON MARGEN DE GRACIA)
             const fechaInput = document.getElementById('id_fecha_creacion');
             if (fechaInput) {
-                const now = new Date();
-                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-                fechaInput.max = now.toISOString().slice(0, 16);
+                const maxDate = new Date();
+                // Le sumamos 10 minutos a la hora en la que se abrió la página
+                maxDate.setMinutes(maxDate.getMinutes() + 10 - maxDate.getTimezoneOffset());
+                fechaInput.max = maxDate.toISOString().slice(0, 16);
             }
+
+            // Lógica de bloqueo de doble clic
+            const formularios = document.querySelectorAll('.form-con-bloqueo');
+            formularios.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const btnGuardar = form.querySelector('.btn-guardar');
+                    if (btnGuardar) {
+                        btnGuardar.disabled = true;
+                        btnGuardar.classList.add('opacity-70', 'cursor-not-allowed');
+                        const textoCargando = btnGuardar.id.includes('eliminar') ? 'Procesando...' : 'Guardando...';
+                        
+                        btnGuardar.innerHTML = `
+                            <svg class="animate-spin h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            ${textoCargando}
+                        `;
+                    }
+                });
+            });
         });
     </script>
 </div>
